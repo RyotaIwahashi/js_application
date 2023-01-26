@@ -1,0 +1,27 @@
+### create
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "content": "VSCode is a good tool for testing a REST-api",
+  "important": true,
+  "dammy": "dammy"
+}
+
+### create validation error
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "content": "lol",
+  "important": true
+}
+
+### change note content and important
+PUT http://localhost:8080/api/notes/63a04f22fdc2c907f32e80ff
+Content-Type: application/json
+
+{
+  "content": "html is easy lol",
+  "important": true
+}

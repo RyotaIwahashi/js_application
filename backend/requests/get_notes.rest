@@ -1,0 +1,16 @@
+GET http://localhost:8080/api/notes
+
+### 200
+GET http://localhost:8080/api/notes/63be87b512112c6a71c74c4d
+
+### 404 not found
+GET http://localhost:8080/api/notes/63be87b512112c6a71c74c11
+
+### 400 error
+GET http://localhost:8080/api/notes/xxx
+
+### 404 unknown endpoint
+GET http://localhost:8080/xxx
+
+### delete
+DELETE http://localhost:8080/api/notes/63a04793f34f5c8e4abbcd50
