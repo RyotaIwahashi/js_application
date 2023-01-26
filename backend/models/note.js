@@ -1,23 +1,15 @@
 const mongoose = require('mongoose')
 
-const url = process.env.MONGODB_URL
-console.log('connection to', url)
-
-mongoose.connect(url)
-  .then(() => {
-    console.log('connected to MongoDB')
-  })
-  .catch(e => {
-    console.log('error connection to MongoDB:', e.message)
-  })
-
 const noteSchema = new mongoose.Schema({
   content: {
     type: String,
     minLength: 5,
+    required: true, // built-in validator が使える
+  },
+  date: {
+    type: Date,
     required: true,
   },
-  date: Date,
   important: Boolean,
 }, {
   toJSON: {
@@ -32,6 +24,7 @@ const noteSchema = new mongoose.Schema({
     }
   }
 })
+
 // toJsonの書き換えは set でもできるっぽい？
 // noteSchema.set('toJson', {
 //   transform: (document, returnedObject) => {

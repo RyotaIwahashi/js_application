@@ -1,6 +1,6 @@
 import axios from 'axios'
 // const baseUrl = 'http://localhost:3001/api/notes'
-const baseUrl = '/api/notes' // バックエンドにbuildフォルダをコピーして渡した場合は省略可能になる
+const baseUrl = '/api/notes' // バックエンドにbuildフォルダをコピーして渡した場合はドメインは省略可能になる
 // ただし、開発モードではフロントエンドがアドレスlocalhost:3000にあるため、バックエンドへのリクエストは間違ったアドレスlocalhost:3000/api/notesに送られる。
 
 const getAll = () => {
