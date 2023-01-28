@@ -18,7 +18,6 @@ const noteSchema = new mongoose.Schema({
     // Mongoose オブジェクトの_idプロパティは文字列のように見えますが、実際にはオブジェクトなので、文字列に変換する(フロント側が文字列で待ってるため)。
     transform: (doc, ret) => {
       ret.id = ret._id.toString()
-      console.log(ret)
       delete ret._id
       delete ret.__v
     }

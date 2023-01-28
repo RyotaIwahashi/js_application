@@ -4,7 +4,7 @@ const app = express()
 const cors = require('cors')
 const notesRouter = require('./controllers/notes')
 const middleware = require('./utils/middleware')
-const { info } = require('./utils/logger')
+const { info, error } = require('./utils/logger')
 const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
@@ -13,10 +13,10 @@ info('connecting to', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
-    console.log('connected to MongoDB')
+    info('connected to MongoDB')
   })
   .catch(e => {
-    console.log('error connection to MongoDB:', e.message)
+    error('error connection to MongoDB:', e.message)
   })
 
 // ミドルウェアの実行順序は、app.useでExpressにロードされた順序と同じ
