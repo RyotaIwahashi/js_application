@@ -3,12 +3,17 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
 
-notesRouter.get('/', (request, response) => {
-  Note.find({}).then(notes => {
-    // notes変数に Mongo によって返された配列オブジェクトが割り当たる
-    // レスポンスが JSON 形式で送信されると、配列内の各オブジェクトのtoJSONメソッド(上書きしたやつ)がJSON.stringifyメソッドによって自動的に呼び出される。
-    response.json(notes)
-  })
+notesRouter.get('/', async (request, response) => {
+  // get に割り当てる関数を同期関数(asyncなし)にした場合は、
+  // 下記のように非同期関数であるfind()を同期的に処理するためにthen()が必要になる。
+  // Note.find({}).then(notes => {
+  //   response.json(notes)
+  // })
+
+  // notes変数に Mongo によって返された配列オブジェクトが割り当たる
+  const notes = await Note.find({})
+  // レスポンスが JSON 形式で送信されると、配列内の各オブジェクトのtoJSONメソッド(上書きしたやつ)がJSON.stringifyメソッドによって自動的に呼び出される。
+  response.json(notes)
 })
 
 notesRouter.get('/:id', (request, response, next) => {
@@ -25,7 +30,7 @@ notesRouter.get('/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-notesRouter.post('/', (request, response, next) => {
+notesRouter.post('/',  async (request, response, next) => {
   const body = request.body
 
   const note = new Note({
@@ -34,11 +39,14 @@ notesRouter.post('/', (request, response, next) => {
     date: new Date()
   })
 
-  note.save()
-    .then(savedNote => {
-      response.json(savedNote)
-    })
-    .catch(error => next(error))
+  // note.save()
+  //   .then(savedNote => {
+  //     response.status(201).json(savedNote)
+  //   })
+  //   .catch(error => next(error))
+
+  const savedNote = await note.save()
+  response.status(201).json(savedNote)
 })
 
 notesRouter.delete('/:id', (request, response, next) => {
