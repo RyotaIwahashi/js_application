@@ -24,3 +24,5 @@ yarn-error.log*
 !.dockerignore
 
 requests/flow.rest
+
+/coverage
