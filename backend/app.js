@@ -1,5 +1,6 @@
 const config = require('./utils/config')
 const express = require('express')
+require('express-async-errors') // try-catch ブロックを使わなくても、非同期ルートで例外が発生した場合、実行は自動的にエラー処理ミドルウェアに渡される
 const app = express()
 const cors = require('cors')
 const notesRouter = require('./controllers/notes')
