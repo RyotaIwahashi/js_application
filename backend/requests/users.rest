@@ -1,0 +1,12 @@
+### all users get
+GET http://localhost:8080/api/users
+
+### user create
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "root",
+  "name": "Superuser",
+  "password": "salainen"
+}
