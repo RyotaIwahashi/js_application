@@ -1,5 +1,6 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 
@@ -9,6 +10,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const Note = require('../models/note')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Note.deleteMany({})
@@ -25,6 +27,12 @@ beforeEach(async () => {
   //   let noteObject = new Note(note)
   //   await noteObject.save()
   // }
+
+  // user作成
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('secret', 10)
+  const user = new User({ username: 'root', passwordHash })
+  await user.save()
 })
 
 describe('when there is initially some notes saved', () => {
@@ -94,13 +102,22 @@ describe('viewing a specific note', () => {
 
 describe('addition of a new note', () => {
   test('succeeds with valid data', async () => {
+    // beforeEachで作ったユーザでログインしてトークンを取得する
+    const token = await api
+      .post('/api/login')
+      .send({ username: 'root', password: 'secret' })
+
+    const user = await User.findOne({ username: 'root' })
+
     const newNote = {
       content: 'async/await simplifies making async calls',
-      important: true
+      important: true,
+      userId: user._id,
     }
 
     await api
       .post('/api/notes')
+      .set('Authorization', `Bearer ${token.body.token}`)
       .send(newNote)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -115,14 +132,27 @@ describe('addition of a new note', () => {
   })
 
   test('fails with status code 400 if data invalid', async () => {
+    // beforeEachで作ったユーザでログインしてトークンを取得する
+    const token = await api
+      .post('/api/login')
+      .send({ username: 'root', password: 'secret' })
+
+    const user = await User.findOne({ username: 'root' })
+
     const newNote = {
-      important: true
+      important: true,
+      userId: user._id,
     }
 
-    await api
+    const result = await api
       .post('/api/notes')
+      .set('Authorization', `Bearer ${token.body.token}`)
       .send(newNote)
       .expect(400)
+
+    expect(result.body.error).toEqual(
+      'Note validation failed: content: Path `content` is required.'
+    )
 
     const notesAtEnd = await helper.notesInDb()
 
