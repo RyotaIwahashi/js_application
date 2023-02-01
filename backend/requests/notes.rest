@@ -25,6 +25,16 @@ Content-Type: application/json
   "dammy": "dammy"
 }
 
+### create with user data
+POST http://localhost:8080/api/notes
+Content-Type: application/json
+
+{
+  "content": "superuser requested to create note 2",
+  "important": true,
+  "userId": "63d92d65bc17070e8f1631bb"
+}
+
 ### create validation error
 POST http://localhost:8080/api/notes
 Content-Type: application/json

@@ -3,7 +3,13 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+  // userを取得する際に、userに紐づくnotesも取得する。
+  // この際、RDBなら、結合クエリで取ってくるため、クエリ実行中にDBの状態が変わることはないが、
+  // ドキュメントデータベースの場合は、結合クエリが存在しないため、mongooseが複数クエリを実行して結合を実現する。
+  // そのため、クエリ実行中にDBの状態が変わる可能性はある。
+  const users = await User
+    .find({}).populate('notes', { content: 1, important: 1 })
+
   response.json(users)
 })
 

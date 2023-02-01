@@ -2,6 +2,7 @@
 // routerオブジェクトについて: http://expressjs.com/en/api.html#router
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
+const User = require('../models/user')
 
 notesRouter.get('/', async (request, response) => {
   // get に割り当てる関数を同期関数(asyncなし)にした場合は、
@@ -11,7 +12,8 @@ notesRouter.get('/', async (request, response) => {
   // })
 
   // notes変数に Mongo によって返された配列オブジェクトが割り当たる
-  const notes = await Note.find({})
+  const notes = await Note
+    .find({}).populate('user', { username: 1, name: 1 })
   // レスポンスが JSON 形式で送信されると、配列内の各オブジェクトのtoJSONメソッド(上書きしたやつ)がJSON.stringifyメソッドによって自動的に呼び出される。
   response.json(notes)
 })
@@ -28,19 +30,19 @@ notesRouter.get('/:id', async (request, response) => {
 notesRouter.post('/',  async (request, response) => {
   const body = request.body
 
+  const user = await User.findById(body.userId)
+
   const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date()
+    date: new Date(),
+    user: user._id, // ここはObjectIdで良い。(toString()は不要)
   })
 
-  // note.save()
-  //   .then(savedNote => {
-  //     response.status(201).json(savedNote)
-  //   })
-  //   .catch(error => next(error))
-
   const savedNote = await note.save()
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
   response.status(201).json(savedNote)
 })
 
