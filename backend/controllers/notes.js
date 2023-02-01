@@ -1,6 +1,7 @@
 // ルートハンドラ
 // routerオブジェクトについて: http://expressjs.com/en/api.html#router
 const notesRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const Note = require('../models/note')
 const User = require('../models/user')
 
@@ -27,8 +28,25 @@ notesRouter.get('/:id', async (request, response) => {
   }
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 notesRouter.post('/',  async (request, response) => {
   const body = request.body
+
+  // authorization ヘッダーにあるベアラーtokenを検証する。
+  // 検証ができれば、ログイン済みユーザとして処理を続行する。
+  // トークンからデコードされたオブジェクトには、デジタル署名したユーザー名とidフィールドが含まれている。
+  // トークンが見つからないか無効な場合、例外JsonWebTokenErrorが発生
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
 
   const user = await User.findById(body.userId)
 

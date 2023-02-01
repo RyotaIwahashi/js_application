@@ -24,6 +24,7 @@ loginRouter.post('/', async (request, response) => {
 
   // トークンには、ユーザー名とユーザーIDがデジタル署名された形式で含まれている
   // デジタル署名により、SECRET の値を知っている者だけが有効なトークンを生成できることが保証される
+  // つまりこの値を持つサーバしか、このトークンを生成できないし、検証もできない。
   const token = jwt.sign(userForToken, process.env.SECRET)
 
   response

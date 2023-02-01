@@ -15,24 +15,16 @@ GET http://localhost:8080/xxx
 ### delete
 DELETE http://localhost:8080/api/notes/63d6736d6dbf2ea1da85abc4
 
-### create
+### create with userId (ログインしてデジタル署名･トークン発行が必要)
 POST http://localhost:8080/api/notes
 Content-Type: application/json
+Authorization: Bearer xxx
 
 {
-  "content": "VSCode is a good tool for testing a REST-api",
+  "content": "VSCode is a good tool for testing a REST-api with Bearer token",
   "important": true,
+  "userId": "63d92d65bc17070e8f1631bb",
   "dammy": "dammy"
-}
-
-### create with user data
-POST http://localhost:8080/api/notes
-Content-Type: application/json
-
-{
-  "content": "superuser requested to create note 2",
-  "important": true,
-  "userId": "63d92d65bc17070e8f1631bb"
 }
 
 ### create validation error
