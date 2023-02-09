@@ -1,5 +1,3 @@
-import react from 'react'
-
 const Footer = () => {
   const footerStyle = {
     color: 'green',
@@ -10,7 +8,7 @@ const Footer = () => {
   return (
     <div style={footerStyle}>
       <br />
-      <em>Note app, Department of Computer Science</em>
+      <em>Ryota's app 2023</em>
     </div>
   )
 }
