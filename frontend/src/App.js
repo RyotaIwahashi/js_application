@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import noteService from './services/notes'
 import loginService from './services/login'
-import { Note, Notification, LoginForm, NoteForm, Footer } from './components'
+import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer } from './components'
 import './index.css'
 
 const App = () => {
@@ -24,6 +24,15 @@ const App = () => {
   }, []) // 第2引数で、特定の値が変更された場合にのみエフェクトを起動するように選択できる。
          // 空の配列[]の場合、コンポーネントの最初のレンダリングのときにだけ実行される。
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
+
   const addNote = async (event) => {
     event.preventDefault()
     const noteObject = {
@@ -44,7 +53,15 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      setUser(user)
+
+      // ローカルストレージはkey-valueデータベース。すべて文字列で格納する必要があるため、
+      // stringifyを使用している。
+      window.localStorage.setItem(
+        'loggedNoteappUser', JSON.stringify(user)
+      )
+      noteService.setToken(user.token)
+
+      setUser(user) // state変える度にrenderされてる。
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -53,6 +70,13 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = async (event) => {
+    event.preventDefault()
+
+    window.localStorage.removeItem('loggedNoteappUser')
+    setUser(null)
   }
 
   const handleNoteChange = (e) => {
@@ -81,7 +105,7 @@ const App = () => {
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
-  console.log(user === null)
+  console.log(user)
 
   return (
     <div>
@@ -102,10 +126,15 @@ const App = () => {
           handleLogin={handleLogin}
           setUsername={setUsername}
           setPassword={setPassword}/> :
-        <NoteForm
-          addNote={addNote}
-          newNote={newNote}
-          handleNoteChange={handleNoteChange} />
+        <div>
+          <LogoutForm
+            handleLogout={handleLogout}
+          />
+          <NoteForm
+            addNote={addNote}
+            newNote={newNote}
+            handleNoteChange={handleNoteChange} />
+        </div>
       }
 
       <div>

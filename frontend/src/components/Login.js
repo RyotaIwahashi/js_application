@@ -1,6 +1,6 @@
 import React from 'react'
 
-const LoginFrom = ({ username, password, handleLogin, setUsername, setPassword }) => {
+const LoginForm = ({ username, password, handleLogin, setUsername, setPassword }) => {
   return(
     <form onSubmit={handleLogin} style={{ marginBottom: '20px' }}>
       <div>
@@ -26,4 +26,7 @@ const LoginFrom = ({ username, password, handleLogin, setUsername, setPassword }
   )
 }
 
-export default LoginFrom
+
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default LoginForm
