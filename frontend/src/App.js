@@ -25,6 +25,7 @@ const App = () => {
          // 空の配列[]の場合、コンポーネントの最初のレンダリングのときにだけ実行される。
 
   useEffect(() => {
+    // アクセスの度にlocalStorageからログイン情報を読み込む
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -105,9 +106,6 @@ const App = () => {
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
-
-  // サーバ側からset-cookieを指定されて登録したcookieは、ブラウザの開発者コンソールの`アプリケーション`でしか見れない？
-  // console.log(document.cookie)
 
   return (
     <div>
