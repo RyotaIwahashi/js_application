@@ -31,12 +31,24 @@ loginRouter.post('/', async (request, response) => {
     { expiresIn: 60*60 }
   )
 
-  // 有効期限を設ける他に、サーバ側セッションとcookieを利用する方法がある。
-  // トークンに関する情報(セッションID)を、メモリorデータベースorストレージファイルに保存しておいて、アクセス時にトークンがまだ有効かどうかをチェックする
-  // この場合、アクセス権をいつでも取り消すことができるメリットがある。
-  // トークンの有効性のチェックはパフォーマンスに影響するため、高速インメモリデータストアであるRedisなどのkey-valueデータベースに保存するのが一般的。
-  // jwtトークンの場合には、トークンにはユーザに関する情報は含まれず、リクエストごとにユーザのIDに関する関連情報をデータベースから取得する。
-  // Bearerトークンはheaderにつけるが、サーバ側セッションを使用する場合はcookieのkey:valueを使用する。
+  // Dateオブジェクトは、ホストシステムのタイムゾーンに基づき、常にUTC(世界標準時)に変換して値を格納する
+  // 日本のシステムなら9時間前
+  const time = new Date()
+
+  // toString()などメソッドを使用して出力すると日本時間に戻して返してくれる
+  // console.log(time.toString())
+
+  // 削除期限を1分後に設定してcookieとして保存するよう指示する
+  // cookieのexpiresにはUTCを登録する。ブラウザ側で各ホストのタイムゾーン設定に合わせて処理してくれる。
+  // つまり、ブラウザ側がどのタイムゾーンでも対応できる
+  time.setMinutes(time.getMinutes() + 1)
+  response.cookie('jwtToken', token, { expires: time }) // responseキューにヘッダー情報を入れられる。まだクライアントには送信されない。
+
+  // maxAgeを使用して以下の例だと2時間という制限をつけられる。(自動で日時に変換してExpiresに登録されてる)
+  // response.cookie('jwtToken', token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true })
+
+  // キューに入れられているヘッダーを読むことができる
+  // console.log(response.getHeader('set-cookie'))
 
   response
     .status(200)

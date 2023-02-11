@@ -105,7 +105,9 @@ const App = () => {
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
-  console.log(user)
+
+  // サーバ側からset-cookieを指定されて登録したcookieは、ブラウザの開発者コンソールの`アプリケーション`でしか見れない？
+  // console.log(document.cookie)
 
   return (
     <div>
