@@ -1,8 +1,8 @@
 import React from 'react'
 
-const LogoutForm = ({ handleLogout }) => {
+const LogoutForm = (props) => {
   return(
-    <form onSubmit={handleLogout} style={{ marginBottom: '20px' }}>
+    <form onSubmit={props.handleSubmit} style={{ marginBottom: '20px' }}>
       <button type="submit">logout</button>
     </form>
   )

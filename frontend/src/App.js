@@ -12,7 +12,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  // const [flag, setFlag] = useState(false)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
@@ -77,6 +77,7 @@ const App = () => {
     event.preventDefault()
 
     window.localStorage.removeItem('loggedNoteappUser')
+    setLoginVisible(false)
     setUser(null)
   }
 
@@ -105,6 +106,31 @@ const App = () => {
     }
   }
 
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={{...hideWhenVisible, marginBottom: '10px'}}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={{...showWhenVisible, marginBottom: '10px'}}>
+          <LoginForm 
+            username={username}
+            password={password}
+            handleSubmit={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+          />
+          <button
+            onClick={() => setLoginVisible(false)}
+            style={{ marginTop: '5px' }}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
   return (
@@ -120,15 +146,10 @@ const App = () => {
       }
 
       {user === null ?
-        <LoginForm 
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          setUsername={setUsername}
-          setPassword={setPassword}/> :
+        loginForm() :
         <div>
           <LogoutForm
-            handleLogout={handleLogout}
+            handleSubmit={handleLogout}
           />
           <NoteForm
             addNote={addNote}

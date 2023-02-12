@@ -1,28 +1,63 @@
 import React from 'react'
 
-const LoginForm = ({ username, password, handleLogin, setUsername, setPassword }) => {
-  return(
-    <form onSubmit={handleLogin} style={{ marginBottom: '20px' }}>
-      <div>
-        username
+// ↓こういう風に書くんじゃなくて、コンポーネントが汎用的に使えるように書く。
+// const LoginForm = ({ username, password, handleLogin, setUsername, setPassword }) => {
+//   return(
+//     <form onSubmit={handleLogin} style={{ marginBottom: '20px' }}>
+//       <div>
+//         username
+//           <input
+//             type="text"
+//             value={username}
+//             name="Username"
+//             onChange={({ target }) => setUsername(target.value)}
+//           />
+//       </div>
+//       <div>
+//         password
+//           <input
+//             type="password"
+//             value={password}
+//             name="Password"
+//             onChange={({ target }) => setPassword(target.value)}
+//           />
+//       </div>
+//       <button type="submit">login</button>
+//     </form>
+//   )
+// }
+
+// handleSubmitとかがprops。(props) => {}と書く代わりに、destructuringによって変数に割り当てている。
+const LoginForm = ({
+  handleSubmit,
+  handleUsernameChange,
+  handlePasswordChange,
+  username,
+  password,
+}) => {
+  return (
+    <div>
+      <h2>Login</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          username
           <input
-            type="text"
             value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
+            onChange={handleUsernameChange}
           />
-      </div>
-      <div>
-        password
+        </div>
+        <div>
+          password
           <input
             type="password"
             value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+            onChange={handlePasswordChange}
           />
-      </div>
-      <button type="submit">login</button>
-    </form>
+        </div>
+        <button type="submit" style={{ marginTop: '5px' }}>login</button>
+      </form>
+    </div>
   )
 }
 
