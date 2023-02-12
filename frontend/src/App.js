@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import noteService from './services/notes'
 import loginService from './services/login'
-import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer } from './components'
+import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
 import './index.css'
 
 const App = () => {
@@ -107,27 +107,27 @@ const App = () => {
   }
 
   const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-
     return (
-      <div>
-        <div style={{...hideWhenVisible, marginBottom: '10px'}}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={{...showWhenVisible, marginBottom: '10px'}}>
-          <LoginForm 
-            username={username}
-            password={password}
-            handleSubmit={handleLogin}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-          />
-          <button
-            onClick={() => setLoginVisible(false)}
-            style={{ marginTop: '5px' }}>cancel</button>
-        </div>
-      </div>
+      <Togglable buttonLabel='login' style={{ marginBottom: '10px' }}>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </Togglable>
+    )
+  }
+
+  const noteForm = () => {
+    return (
+      <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }}>
+        <NoteForm
+          onSubmit={addNote}
+          value={newNote}
+          handleChange={handleNoteChange} />
+      </Togglable>
     )
   }
 
@@ -151,10 +151,7 @@ const App = () => {
           <LogoutForm
             handleSubmit={handleLogout}
           />
-          <NoteForm
-            addNote={addNote}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange} />
+          {noteForm()}
         </div>
       }
 
