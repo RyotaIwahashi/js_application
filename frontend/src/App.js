@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
@@ -30,11 +30,6 @@ const App = () => {
     }
   }, [])
 
-  const handleAddNote = async (noteObject) => {
-    const returnedNote = await noteService.create(noteObject)
-    setNotes(notes.concat(returnedNote))
-  }
-
   const handleLogin = async (userInput) => {
     try {
       const user = await loginService.login({
@@ -62,6 +57,12 @@ const App = () => {
 
     window.localStorage.removeItem('loggedNoteappUser')
     setUser(null)
+  }
+
+  const handleAddNote = async (noteObject) => {
+    noteFormRef.current.toggleVisibility()
+    const returnedNote = await noteService.create(noteObject)
+    setNotes(notes.concat(returnedNote))
   }
 
   const toggleImportanceOf = async (id) => {
@@ -101,9 +102,12 @@ const App = () => {
     )
   }
 
+  // noteFormRef変数は、コンポーネントへの参照として機能する。
+  // このフックは、コンポーネントの再レンダリングを通じて保持される同じ参照 (ref) を保証する。
+  const noteFormRef = useRef()
   const noteForm = () => {
     return (
-      <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }}>
+      <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }} ref={noteFormRef}>
         <NoteForm
           createNote={handleAddNote} />
       </Togglable>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 // handleSubmitとかがprops。(props) => {}と書く代わりに、destructuringによって変数に割り当てている。
 const LoginForm = ({ handleLogin }) => {
@@ -40,6 +41,9 @@ const LoginForm = ({ handleLogin }) => {
   )
 }
 
+LoginForm.propTypes = {
+  handleLogin: PropTypes.func.isRequired,
+}
 
 
 // eslint-disable-next-line import/no-anonymous-default-export
