@@ -6,7 +6,6 @@ import './index.css'
 
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
@@ -33,17 +32,9 @@ const App = () => {
     }
   }, [])
 
-  const addNote = async (event) => {
-    event.preventDefault()
-    const noteObject = {
-      content: newNote,
-      date: new Date(),
-      important: Math.random() < 0.5,
-    }
-
+  const addNote = async (noteObject) => {
     const returnedNote = await noteService.create(noteObject)
     setNotes(notes.concat(returnedNote))
-    setNewNote('')
   }
 
   const handleLogin = async (event) => {
@@ -77,10 +68,6 @@ const App = () => {
 
     window.localStorage.removeItem('loggedNoteappUser')
     setUser(null)
-  }
-
-  const handleNoteChange = (e) => {
-    setNewNote(e.target.value)
   }
 
   const toggleImportanceOf = async (id) => {
@@ -118,13 +105,17 @@ const App = () => {
     )
   }
 
+  const logoutForm = () => {
+    return (
+      <LogoutForm handleSubmit={handleLogout} />
+    )
+  }
+
   const noteForm = () => {
     return (
       <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }}>
         <NoteForm
-          onSubmit={addNote}
-          value={newNote}
-          handleChange={handleNoteChange} />
+          createNote={addNote} />
       </Togglable>
     )
   }
@@ -146,9 +137,7 @@ const App = () => {
       {user === null ?
         loginForm() :
         <div>
-          <LogoutForm
-            handleSubmit={handleLogout}
-          />
+          {logoutForm()}
           {noteForm()}
         </div>
       }
@@ -159,7 +148,7 @@ const App = () => {
         </button>
       </div>
       <ul>
-        {notesToShow.map(note => 
+        {notesToShow.map(note =>
           <Note 
             key={note.id}
             note={note}
