@@ -8,8 +8,6 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   // Similar to componentDidMount and componentDidUpdate:
@@ -32,29 +30,25 @@ const App = () => {
     }
   }, [])
 
-  const addNote = async (noteObject) => {
+  const handleAddNote = async (noteObject) => {
     const returnedNote = await noteService.create(noteObject)
     setNotes(notes.concat(returnedNote))
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    
+  const handleLogin = async (userInput) => {
     try {
       const user = await loginService.login({
-        username, password,
+        username: userInput.username, 
+        password: userInput.password,
       })
 
-      // ローカルストレージはkey-valueデータベース。すべて文字列で格納する必要があるため、
-      // stringifyを使用している。
+      // ローカルストレージはkey-valueデータベース。すべて文字列で格納する必要があるため、stringifyを使用している。
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(user)
       )
       noteService.setToken(user.token)
 
       setUser(user) // state変える度にrenderされてる。
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -95,11 +89,7 @@ const App = () => {
     return (
       <Togglable buttonLabel='login' style={{ marginBottom: '10px' }}>
         <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
+          handleLogin={handleLogin}
         />
       </Togglable>
     )
@@ -115,7 +105,7 @@ const App = () => {
     return (
       <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }}>
         <NoteForm
-          createNote={addNote} />
+          createNote={handleAddNote} />
       </Togglable>
     )
   }
