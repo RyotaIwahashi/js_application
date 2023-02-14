@@ -4,7 +4,7 @@ const baseUrl = '/api/notes' // バックエンドにbuildフォルダをコピ�
 // ただし、開発モードではフロントエンドがアドレスlocalhost:3000にあるため、バックエンドへのリクエストは間違ったアドレスlocalhost:3000/api/notesに送られる。
 
 // プライベート変数。ここで定義した関数からしか変更できない。
-let token;
+let token
 
 const setToken = newToken => {
   token = `Bearer ${newToken}`
@@ -37,5 +37,4 @@ const update = async (id, newObject) => {
 //   update: update,
 // }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { getAll, create, update, setToken }

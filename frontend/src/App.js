@@ -17,8 +17,9 @@ const App = () => {
       setNotes(initialNotes)
     }
     fetchData()
-  }, []) // 第2引数で、特定の値が変更された場合にのみエフェクトを起動するように選択できる。
-         // 空の配列[]の場合、コンポーネントの最初のレンダリングのときにだけ実行される。
+  }, [])
+  // 第2引数で、特定の値が変更された場合にのみエフェクトを起動するように選択できる。
+  // 空の配列[]の場合、コンポーネントの最初のレンダリングのときにだけ実行される。
 
   useEffect(() => {
     // アクセスの度にlocalStorageからログイン情報を読み込む
@@ -33,7 +34,7 @@ const App = () => {
   const handleLogin = async (userInput) => {
     try {
       const user = await loginService.login({
-        username: userInput.username, 
+        username: userInput.username,
         password: userInput.password,
       })
 
@@ -122,7 +123,7 @@ const App = () => {
 
       <Notification message={errorMessage} />
 
-      {user && 
+      {user &&
         <div>
           <p>{user.name} logged in</p>
         </div>
@@ -143,13 +144,13 @@ const App = () => {
       </div>
       <ul>
         {notesToShow.map(note =>
-          <Note 
+          <Note
             key={note.id}
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)} />
         )}
       </ul>
-      
+
       <Footer />
     </div>
   )
