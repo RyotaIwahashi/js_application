@@ -3,6 +3,23 @@ import '@testing-library/jest-dom/extend-expect'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Note from './Note'
+import renderer from 'react-test-renderer'
+
+test('snapshot', () => {
+  const note = {
+    content: 'Component testing is done with react-testing-library',
+    important: true
+  }
+
+  const tree = renderer
+    .create(<Note note={note} />)
+    .toJSON
+
+  // このテストを初めて実行すると、Jestはスナップショットファイルを作成し、
+  // 次回以降、比較することでテストする。
+  // snapshotの更新方法: https://jestjs.io/docs/snapshot-testing#updating-snapshots
+  expect(tree).toMatchSnapshot()
+})
 
 test('renders content', () => {
   const note = {
@@ -23,8 +40,8 @@ test('renders content', () => {
   const { container } = render(<Note note={note}/>)
 
   // コンポーネントのHTMLをコンソールに出力できる
-  screen.debug()
-  screen.debug(element) // こうすると、必要な要素のみ出力できる
+  // screen.debug()
+  // screen.debug(element) // こうすると、必要な要素のみ出力できる
 
   // containerにはquerySelectorメソッドが用意されていて、レンダリングされた要素をCSSセレクタで検索できる。
   const div = container.querySelector('.note')
