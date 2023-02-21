@@ -10,3 +10,13 @@ Content-Type: application/json
   "name": "Superuser",
   "password": "salainen"
 }
+
+### test user create
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "name": "testuser",
+  "password": "password"
+}
