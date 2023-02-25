@@ -44,4 +44,30 @@ describe('Note app', function() {
       cy.contains('a note created by cypress')
     })
   })
+
+  describe('when logged in', function() {
+    beforeEach(function() {
+      cy.contains('login').click()
+      cy.get('[data-testid=username]').type('testuser')
+      cy.get('[data-testid=password]').type('password')
+      cy.get('[data-testid=login-button]').click()
+    })
+
+    describe('and a note exists', function () {
+      beforeEach(function () {
+        cy.contains('new note').click()
+        cy.get('[data-testid=note-input]').type('another note cypress')
+        cy.get('[data-testid=note-save]').click()
+      })
+
+      it('it can be made important', function () {
+        cy.contains('another note cypress')
+          .contains('make not important')
+          .click()
+
+        cy.contains('another note cypress')
+          .contains('make important')
+      })
+    })
+  })
 })
