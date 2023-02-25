@@ -28,7 +28,27 @@ describe('Note app', function() {
     cy.contains('testuser logged in')
   })
 
-  // describeが入ると状態が完全にリセットされる
+  // it.only(...)とすると、cypressがonlyのついたテストのみを実行するようになる。
+  // なので、新たに一つのテストを実装するときはそのテストにonlyをつけると良い。
+  it('login fails with wrong password', function() {
+    cy.contains('login').click()
+    cy.get('[data-testid=username]').type('testuser')
+    cy.get('[data-testid=password]').type('wrong')
+    cy.get('[data-testid=login-button]').click()
+
+    // cy.get('.error').contains('Wrong credentials')
+
+    // shouldならいろんなことがテストできる。
+    // 参照: https://docs.cypress.io/guides/references/assertions#Common-Assertions
+    cy.get('.error')
+      .should('contain', 'Wrong credentials')
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid')
+
+    cy.get('html').should('not.contain', 'testuser logged in')
+  })
+
+  // itやdescribeが入ると状態が完全にリセットされる
   describe('when logged in', function() {
     beforeEach(function() {
       cy.contains('login').click()
