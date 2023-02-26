@@ -2,6 +2,7 @@
 // 参照: https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Bypassing-your-UI
 
 // cypressのテスト実行とデバッグについて: https://fullstackopen.com/en/part5/end_to_end_testing#running-and-debugging-the-tests
+// cypress run でヘッドレスで実行できるようにした(mp4が出力される)。cypress open でヘデッドでグラフィカルに確認できる。
 
 // cypressは内部で使用するMochaテストライブラリからdescribeやitを使用する
 // Mocha はthisをbindしないようにアロー関数を使用しないことを推奨している。参照:https://mochajs.org/#arrow-functions
