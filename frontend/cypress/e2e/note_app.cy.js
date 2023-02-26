@@ -85,5 +85,19 @@ describe('Note app', function() {
           .contains('make important')
       })
     })
+
+    describe('and several notes exist', function () {
+      beforeEach(function () {
+        cy.createNote({ content: 'first note', important: false })
+        cy.createNote({ content: 'second note', important: false })
+        cy.createNote({ content: 'third note', important: false })
+      })
+
+      it.only('one of those can be made important', function () {
+        cy.contains('second note').parent().find('button').as('theButton') // getだとページ全体から探すのでfindを使う
+        cy.get('@theButton').click()
+        cy.get('@theButton').should('contain', 'make not important')
+      })
+    })
   })
 })
