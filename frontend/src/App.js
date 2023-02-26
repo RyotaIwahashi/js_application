@@ -47,6 +47,8 @@ const App = () => {
       setUser(user) // state変える度にrenderされてる。
     } catch (exception) {
       setErrorMessage('Wrong credentials')
+
+      // setTimeoutが実行されてから指定時間(5秒)経ったらfbの関数を実行する
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)

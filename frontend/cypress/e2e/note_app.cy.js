@@ -1,6 +1,8 @@
 // cypressは、日常のローカル開発のためのツールとして構築され、最適化されている。
 // 参照: https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Bypassing-your-UI
 
+// cypressのテスト実行とデバッグについて: https://fullstackopen.com/en/part5/end_to_end_testing#running-and-debugging-the-tests
+
 // cypressは内部で使用するMochaテストライブラリからdescribeやitを使用する
 // Mocha はthisをbindしないようにアロー関数を使用しないことを推奨している。参照:https://mochajs.org/#arrow-functions
 describe('Note app', function() {
