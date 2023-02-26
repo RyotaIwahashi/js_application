@@ -69,9 +69,11 @@ describe('Note app', function() {
 
     describe('and a note exists', function () {
       beforeEach(function () {
-        cy.contains('new note').click()
-        cy.get('[data-testid=note-input]').type('another note cypress')
-        cy.get('[data-testid=note-save]').click()
+        // ノートをUIから作るテストはすでにあるので、これ以降はAPI経由でやる
+        cy.createNote({
+          content: 'another note cypress',
+          important: true
+        })
       })
 
       it('it can be made important', function () {

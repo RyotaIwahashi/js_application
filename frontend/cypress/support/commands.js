@@ -21,6 +21,19 @@ Cypress.Commands.add('login', (username, password) => {
     cy.visit('http://localhost:3000')
   })
 })
+
+Cypress.Commands.add('createNote', ({ content, important }) => {
+  cy.request({
+    url: '/api/notes',
+    method: 'POST',
+    body: { content, important },
+    headers: {
+      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedNoteappUser')).token}`
+    }
+  })
+
+  cy.visit('http://localhost:3000')
+})
 //
 //
 // -- This is a child command --
