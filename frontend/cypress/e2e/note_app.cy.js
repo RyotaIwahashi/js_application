@@ -81,10 +81,12 @@ describe('Note app', function() {
 
       it('it can be made important', function () {
         cy.contains('another note cypress')
+          .parent()
           .contains('make not important')
           .click()
 
         cy.contains('another note cypress')
+          .parent()
           .contains('make important')
       })
     })
@@ -96,7 +98,7 @@ describe('Note app', function() {
         cy.createNote({ content: 'third note', important: false })
       })
 
-      it.only('one of those can be made important', function () {
+      it('one of those can be made important', function () {
         cy.contains('second note').parent().find('button').as('theButton') // getだとページ全体から探すのでfindを使う
         cy.get('@theButton').click()
         cy.get('@theButton').should('contain', 'make not important')
