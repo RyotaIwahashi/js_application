@@ -1,17 +1,21 @@
+// cypressは、日常のローカル開発のためのツールとして構築され、最適化されている。
+// 参照: https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Bypassing-your-UI
+
 // cypressは内部で使用するMochaテストライブラリからdescribeやitを使用する
 // Mocha はthisをbindしないようにアロー関数を使用しないことを推奨している。参照:https://mochajs.org/#arrow-functions
 describe('Note app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:8080/api/testing/reset')
+    cy.request('POST', '/api/testing/reset')
     const user = {
       name: 'testuser',
       username: 'testuser',
       password: 'password'
     }
-    cy.request('POST', 'http://localhost:8080/api/users', user)
+    cy.request('POST', '/api/users', user)
     cy.visit('http://localhost:3000')
   })
 
+  // it(テストケース)ごとに状態が完全にリセットされ、毎回beforeEachが実行される
   it('front page can be opened', function() {
     cy.contains('Notes')
     cy.contains('Ryota app 2023')
@@ -48,7 +52,6 @@ describe('Note app', function() {
     cy.get('html').should('not.contain', 'testuser logged in')
   })
 
-  // itやdescribeが入ると状態が完全にリセットされる
   describe('when logged in', function() {
     beforeEach(function() {
       cy.contains('login').click()
@@ -62,15 +65,6 @@ describe('Note app', function() {
       cy.get('[data-testid=note-input]').type('a note created by cypress')
       cy.get('[data-testid=note-save]').click()
       cy.contains('a note created by cypress')
-    })
-  })
-
-  describe('when logged in', function() {
-    beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('[data-testid=username]').type('testuser')
-      cy.get('[data-testid=password]').type('password')
-      cy.get('[data-testid=login-button]').click()
     })
 
     describe('and a note exists', function () {
