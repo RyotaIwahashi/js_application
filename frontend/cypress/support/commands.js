@@ -11,6 +11,16 @@
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
+// 参照: https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Reusing-the-login-code
+Cypress.Commands.add('login', (username, password) => {
+  cy.request('POST', '/api/login', {
+    username: username, password: password
+  }).then(response => {
+    // thenメソッドでrequestへの応答にアクセスできる
+    localStorage.setItem('loggedNoteappUser', JSON.stringify(response.body))
+    cy.visit('http://localhost:3000')
+  })
+})
 //
 //
 // -- This is a child command --

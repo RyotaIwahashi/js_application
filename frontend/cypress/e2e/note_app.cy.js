@@ -54,10 +54,10 @@ describe('Note app', function() {
 
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('[data-testid=username]').type('testuser')
-      cy.get('[data-testid=password]').type('password')
-      cy.get('[data-testid=login-button]').click()
+      // バイパス:経由・迂回という意味。UIをバイパスするとは、UIを迂回する(使わない)という意味？
+      // UIからのログインのテストは一回のみにして、あとはAPIを使ってログインを済ませておくのが時短のために良いらしい。
+      // なおloginは自分でつくったコマンド → support/commands.js
+      cy.login('testuser', 'password')
     })
 
     it('a new note can be created', function() {
