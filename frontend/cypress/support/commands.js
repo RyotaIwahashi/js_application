@@ -13,18 +13,18 @@
 // Cypress.Commands.add('login', (email, password) => { ... })
 // 参照: https://docs.cypress.io/guides/end-to-end-testing/testing-your-app#Reusing-the-login-code
 Cypress.Commands.add('login', (username, password) => {
-  cy.request('POST', '/api/login', {
+  cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
     username: username, password: password
   }).then(response => {
     // thenメソッドでrequestへの応答にアクセスできる
     localStorage.setItem('loggedNoteappUser', JSON.stringify(response.body))
-    cy.visit('http://localhost:3000')
+    cy.visit('/')
   })
 })
 
 Cypress.Commands.add('createNote', ({ content, important }) => {
   cy.request({
-    url: '/api/notes',
+    url: `${Cypress.env('BACKEND')}/notes`,
     method: 'POST',
     body: { content, important },
     headers: {
@@ -32,7 +32,7 @@ Cypress.Commands.add('createNote', ({ content, important }) => {
     }
   })
 
-  cy.visit('http://localhost:3000')
+  cy.visit('/')
 })
 //
 //

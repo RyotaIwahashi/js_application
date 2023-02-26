@@ -5,14 +5,14 @@
 // Mocha はthisをbindしないようにアロー関数を使用しないことを推奨している。参照:https://mochajs.org/#arrow-functions
 describe('Note app', function() {
   beforeEach(function() {
-    cy.request('POST', '/api/testing/reset')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'testuser',
       username: 'testuser',
       password: 'password'
     }
-    cy.request('POST', '/api/users', user)
-    cy.visit('http://localhost:3000')
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.visit('/')
   })
 
   // it(テストケース)ごとに状態が完全にリセットされ、毎回beforeEachが実行される
