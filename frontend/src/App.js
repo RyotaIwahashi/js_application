@@ -3,6 +3,10 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
 import './index.css'
+// import noteReducer from './reducers/noteReducer'
+// import { createStore } from 'redux'
+
+// const store = createStore(noteReducer)
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -15,6 +19,14 @@ const App = () => {
     async function fetchData() {
       const initialNotes = await noteService.getAll()
       setNotes(initialNotes)
+      // storeの状態が変更された場合、React はアプリケーションを自動的に再レンダリングできない。
+      // したがって、ここでdispatchしたあとにレンダリングするように作る必要がある。
+      // レンダリングしないと、store.getState()しても空の値が返ってくる。
+      // (このコンポーネントのstateを変更したりして再レンダリングさせれば、最新のstoreにアクセスできるようになる)
+      // store.dispatch({
+      //   type: 'NEW_NOTE',
+      //   payload: initialNotes
+      // })
     }
     fetchData()
   }, [])
@@ -117,6 +129,8 @@ const App = () => {
     )
   }
 
+  // console.log(store.getState())
+  // const notesToShow = showAll ? store.getState() : store.getState().filter(note => note.important === true)
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
   return (
