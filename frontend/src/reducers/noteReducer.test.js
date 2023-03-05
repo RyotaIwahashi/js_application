@@ -13,6 +13,7 @@ describe('noteReducer', () => {
       }
     }
 
+    // deepFreeze(state)コマンドは、reducerがパラメーターとして指定されたストアの状態を変更しないことを検証する
     deepFreeze(state)
     const newState = noteReducer(state, action)
 
