@@ -19,6 +19,10 @@ const noteReducer = (state = [], action) => {
   }
 }
 
+// モジュールは1つのデフォルトエクスポートを持つことができるが、
+// 複数の normal なエクスポートを持つこともできる。
+// これらは、中括弧で括ってインポートできる。export default の場合は中括弧いらない。
+// 例: import { createNote } from './../reducers/noteReducer'
 export const createNote = (content) => {
   return {
     type: 'NEW_NOTE',
