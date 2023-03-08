@@ -4,28 +4,24 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
 import './index.css'
-import { createNote, toggleImportanceOf } from './reducers/noteReducer'
+import { initialCreateNote, createNote, toggleImportanceOf, deleteNote } from './reducers/noteReducer'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
+
+  // アクションを送信して、Redux storeのstateを変更できるようになる
+  // dispatch()で再レンダリングされる。
+  const dispatch = useDispatch()
+  // ストアに保存されている state に アクセスして、関数をパラメータとして渡して値を取得する
+  const notes = useSelector(state => state)
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     async function fetchData() {
       const initialNotes = await noteService.getAll()
-      setNotes(initialNotes)
-      // storeの状態が変更された場合、React はアプリケーションを自動的に再レンダリングできない。
-      // したがって、ここでdispatchしたあとにレンダリングするように作る必要がある。
-      // レンダリングしないと、store.getState()しても空の値が返ってくる。
-      // (このコンポーネントのstateを変更したりして再レンダリングさせれば、最新のstoreにアクセスできるようになる)
-      // 次回Appコンポーネントでstoreを使うところから。
-      // store.dispatch({
-      //   type: 'NEW_NOTE',
-      //   payload: initialNotes
-      // })
+      dispatch(initialCreateNote(initialNotes))
     }
     fetchData()
   }, [])
@@ -37,7 +33,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      setUser(user) // 上に記載したuseEffectよりこっちが先に実行されて、一回再レンダリングしてる。
       noteService.setToken(user.token)
     }
   }, [])
@@ -76,10 +72,10 @@ const App = () => {
   const handleAddNote = async (noteObject) => {
     noteFormRef.current.toggleVisibility()
     const returnedNote = await noteService.create(noteObject)
-    setNotes(notes.concat(returnedNote))
+    dispatch(createNote(returnedNote))
   }
 
-  const toggleImportanceOf = async (id) => {
+  const handleToggleImportanceOf = async (id) => {
     const note = notes.find(note => note.id === id)
     const changedNote = {
       ...note,
@@ -87,8 +83,8 @@ const App = () => {
     }
 
     try {
-      const returnedNote = await noteService.update(id, changedNote)
-      setNotes(notes.map(note => note.id === id? returnedNote : note))
+      await noteService.update(id, changedNote)
+      dispatch(toggleImportanceOf(id))
     } catch(e) {
       setErrorMessage(
         `${e} :Note '${note.content}' was already removed from server`
@@ -96,7 +92,7 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-      setNotes(notes.filter(n => n.id !== id))
+      dispatch(deleteNote(id))
     }
   }
 
@@ -128,8 +124,6 @@ const App = () => {
     )
   }
 
-  // console.log(store.getState())
-  // const notesToShow = showAll ? store.getState() : store.getState().filter(note => note.important === true)
   const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
   return (
@@ -162,7 +156,7 @@ const App = () => {
           <Note
             key={note.id}
             note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)} />
+            toggleImportance={() => handleToggleImportanceOf(note.id)} />
         )}
       </ul>
 

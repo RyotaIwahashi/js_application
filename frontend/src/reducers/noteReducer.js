@@ -1,8 +1,8 @@
 const noteReducer = (state = [], action) => {
   switch(action.type) {
   case 'NEW_NOTE':
-    // return state.concat(action.payload)
-    return [...state, action.payload]
+    return state.concat(action.payload)
+    // return [...state, action.payload]
   case 'TOGGLE_IMPORTANCE': {
     const id = action.payload.id
     const noteToChange = state.find(n => n.id === id)
@@ -13,6 +13,9 @@ const noteReducer = (state = [], action) => {
     return state.map(note =>
       note.id !== id ? note : changedNote
     )
+  }
+  case 'DELETE_NOTE': {
+    return state.filter(n => n.id !== action.payload.id)
   }
   default:
     return state
@@ -27,7 +30,7 @@ export const createNote = (content) => {
   return {
     type: 'NEW_NOTE',
     payload: {
-      content,
+      ...content,
       important: false,
     }
   }
@@ -36,6 +39,20 @@ export const createNote = (content) => {
 export const toggleImportanceOf = (id) => {
   return {
     type: 'TOGGLE_IMPORTANCE',
+    payload: { id }
+  }
+}
+
+export const initialCreateNote = (notes) => {
+  return {
+    type: 'NEW_NOTE',
+    payload: notes
+  }
+}
+
+export const deleteNote = (id) => {
+  return {
+    type: 'DELETE_NOTE',
     payload: { id }
   }
 }
