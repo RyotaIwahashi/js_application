@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
 import './index.css'
-// import noteReducer from './reducers/noteReducer'
-// import { createStore } from 'redux'
-
-// const store = createStore(noteReducer)
+import { createNote, toggleImportanceOf } from './reducers/noteReducer'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -23,6 +21,7 @@ const App = () => {
       // したがって、ここでdispatchしたあとにレンダリングするように作る必要がある。
       // レンダリングしないと、store.getState()しても空の値が返ってくる。
       // (このコンポーネントのstateを変更したりして再レンダリングさせれば、最新のstoreにアクセスできるようになる)
+      // 次回Appコンポーネントでstoreを使うところから。
       // store.dispatch({
       //   type: 'NEW_NOTE',
       //   payload: initialNotes
