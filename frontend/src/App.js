@@ -70,7 +70,7 @@ const App = () => {
   }
 
   const handleAddNote = async (noteObject) => {
-    noteFormRef.current.toggleVisibility()
+    noteFormRef.current.toggleVisibility() // 別コンポーネントの関数を実行する
     const returnedNote = await noteService.create(noteObject)
     dispatch(createNote(returnedNote))
   }
