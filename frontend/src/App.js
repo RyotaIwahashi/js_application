@@ -71,8 +71,20 @@ const App = () => {
 
   const handleAddNote = async (noteObject) => {
     noteFormRef.current.toggleVisibility() // 別コンポーネントの関数を実行する
-    const returnedNote = await noteService.create(noteObject)
-    dispatch(createNote(returnedNote))
+
+    try {
+      const returnedNote = await noteService.create(noteObject)
+      dispatch(createNote(returnedNote))
+    } catch(e) {
+      if (e.response.status === 401) {
+        window.localStorage.removeItem('loggedNoteappUser')
+        setUser(null)
+        setErrorMessage('認証の有効期限が切れています。')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    }
   }
 
   const handleToggleImportanceOf = async (id) => {
@@ -112,6 +124,23 @@ const App = () => {
     )
   }
 
+  const filterSelected = (value) => {
+    console.log(value)
+  }
+
+  const selectImportantForm = () => {
+    return (
+      <div>
+        all
+        <input type="radio" name="filter" onChange={() => filterSelected('ALL')} />
+        important
+        <input type="radio" name="filter" onChange={() => filterSelected('IMPORTANT')} />
+        nonimportant
+        <input type="radio" name="filter" onChange={() => filterSelected('NONIMPORTANT')} />
+      </div>
+    )
+  }
+
   // noteFormRef変数は、コンポーネントへの参照として機能する。
   // このフックは、コンポーネントの再レンダリングを通じて保持される同じ参照 (ref) を保証する。
   const noteFormRef = useRef()
@@ -120,6 +149,7 @@ const App = () => {
       <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }} ref={noteFormRef}>
         <NoteForm
           createNote={handleAddNote} />
+        {selectImportantForm()}
       </Togglable>
     )
   }
