@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import noteService from './services/notes'
 import loginService from './services/login'
-import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable } from './components'
+import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable, VisibilityFilter } from './components'
 import './index.css'
 import { initialCreateNote, createNote, toggleImportanceOf, deleteNote } from './reducers/noteReducer'
 
 const App = () => {
-  const [showAll, setShowAll] = useState(true)
+  // const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
 
@@ -16,7 +16,14 @@ const App = () => {
   const dispatch = useDispatch()
   // ストアに保存されている state に アクセスして、関数をパラメータとして渡して値を取得する
   // 複数のreducerを使用する場合、state.xxx に各レデューサーが管理するstateにアクセスできる
-  const notes = useSelector(state => state.notes)
+  const notes = useSelector(state => {
+    if ( state.filter === 'ALL') {
+      return state.notes
+    }
+    return state.filter === 'IMPORTANT'
+      ? state.notes.filter(note => note.important)
+      : state.notes.filter(note => !note.important)
+  })
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
@@ -125,23 +132,6 @@ const App = () => {
     )
   }
 
-  const filterSelected = (value) => {
-    console.log(value)
-  }
-
-  const selectImportantForm = () => {
-    return (
-      <div>
-        all
-        <input type="radio" name="filter" onChange={() => filterSelected('ALL')} />
-        important
-        <input type="radio" name="filter" onChange={() => filterSelected('IMPORTANT')} />
-        nonimportant
-        <input type="radio" name="filter" onChange={() => filterSelected('NONIMPORTANT')} />
-      </div>
-    )
-  }
-
   // noteFormRef変数は、コンポーネントへの参照として機能する。
   // このフックは、コンポーネントの再レンダリングを通じて保持される同じ参照 (ref) を保証する。
   const noteFormRef = useRef()
@@ -150,12 +140,9 @@ const App = () => {
       <Togglable buttonLabel='new note' style={{ marginBottom: '20px' }} ref={noteFormRef}>
         <NoteForm
           createNote={handleAddNote} />
-        {selectImportantForm()}
       </Togglable>
     )
   }
-
-  const notesToShow = showAll ? notes : notes.filter(note => note.important === true)
 
   return (
     <div>
@@ -177,13 +164,9 @@ const App = () => {
         </div>
       }
 
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
+      <VisibilityFilter />
       <ul>
-        {notesToShow.map(note =>
+        {notes.map(note =>
           <Note
             key={note.id}
             note={note}
