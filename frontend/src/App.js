@@ -15,7 +15,8 @@ const App = () => {
   // dispatch()で再レンダリングされる。
   const dispatch = useDispatch()
   // ストアに保存されている state に アクセスして、関数をパラメータとして渡して値を取得する
-  const notes = useSelector(state => state)
+  // 複数のreducerを使用する場合、state.xxx に各レデューサーが管理するstateにアクセスできる
+  const notes = useSelector(state => state.notes)
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
