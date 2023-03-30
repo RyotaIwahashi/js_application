@@ -11,7 +11,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
 
-  // アクションを送信して、Redux storeのstateを変更できるようになる
+  // アクションを送信(= 引数渡してreducer関数を実行)して、Redux storeのstateを変更できるようになる
   // dispatch()で再レンダリングされる。
   const dispatch = useDispatch()
   // ストアに保存されている state に アクセスして、関数をパラメータとして渡して値を取得する
