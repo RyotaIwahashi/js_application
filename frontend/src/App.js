@@ -4,7 +4,7 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable, VisibilityFilter } from './components'
 import './index.css'
-import { initialCreateNote, createNote, toggleImportanceOf, deleteNote } from './reducers/noteReducer'
+import { initializeNote, createNote, toggleImportanceOf, deleteNote } from './reducers/noteReducer'
 
 const App = () => {
   // const [showAll, setShowAll] = useState(true)
@@ -29,7 +29,8 @@ const App = () => {
   useEffect(() => {
     async function fetchData() {
       const initialNotes = await noteService.getAll()
-      dispatch(initialCreateNote(initialNotes))
+      dispatch(initializeNote(initialNotes))
+      // これは、dispatch({ type: 'notes/initializeNote', payload: initialNotes }) と同じ動き
     }
     fetchData()
   }, [])
