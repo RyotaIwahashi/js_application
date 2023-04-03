@@ -4,7 +4,7 @@ const noteSlice = createSlice({
   name: 'notes',
   initialState: [],
   reducers: {
-    initializeNote(state, action){
+    setNotes(state, action){
       const content = action.payload
       return content
     },
@@ -42,7 +42,7 @@ const noteSlice = createSlice({
   }
 })
 
-export const { initializeNote, createNote, toggleImportanceOf, deleteNote } = noteSlice.actions
+export const { setNotes, createNote, toggleImportanceOf, deleteNote } = noteSlice.actions
 export default noteSlice.reducer
 
 // createSliceを使わない場合のreducerとactionクリエイターの定義
