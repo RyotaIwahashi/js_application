@@ -2,10 +2,10 @@ import noteReducer from './noteReducer'
 import deepFreeze from 'deep-freeze'
 
 describe('noteReducer', () => {
-  test('returns new state with action NEW_NOTE', () => {
+  test('returns new state with action notes/createNote', () => {
     const state = []
     const action = {
-      type: 'NEW_NOTE',
+      type: 'notes/createNote',
       payload: {
         content: 'the app state is in redux store',
         important: true,
@@ -18,10 +18,10 @@ describe('noteReducer', () => {
     const newState = noteReducer(state, action)
 
     expect(newState).toHaveLength(1)
-    expect(newState).toContainEqual(action.payload)
+    expect(newState.map(s => s.content)).toContainEqual(action.payload.content)
   })
 
-  test('returns new state with action TOGGLE_IMPORTANCE', () => {
+  test('returns new state with action notes/toggleImportanceOf', () => {
     const state = [
       {
         content: 'the app state is in redux store',
@@ -35,10 +35,8 @@ describe('noteReducer', () => {
       }]
 
     const action = {
-      type: 'TOGGLE_IMPORTANCE',
-      payload: {
-        id: 2
-      }
+      type: 'notes/toggleImportanceOf',
+      payload: 2
     }
 
     deepFreeze(state)

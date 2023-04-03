@@ -10,16 +10,16 @@ const noteSlice = createSlice({
     },
     createNote(state, action) {
       const content = action.payload
-      state.concat({
-        ...content,
-        important: false,
-      })
+      // state.concat({
+      //   ...content,
+      //   important: false,
+      // })
       // createSlice関数によって作成されたレデューサーではImmerライブラリを利用していて、
       // これによりレデューサー内の状態引数を変更できる。なのでpushも使える。
-      // state.push({
-      //   ...content,
-      //   important: false
-      // })
+      state.push({
+        ...content,
+        important: false
+      })
     },
     toggleImportanceOf(state, action) {
       const id = action.payload
@@ -28,6 +28,9 @@ const noteSlice = createSlice({
         ...noteToChange,
         important: !noteToChange.important
       }
+      // 普通にconsole.log(state)にすると、Immer ライブラリによる内部情報が出力されるのであまり役に立たない。
+      // 下記のように記載することで人間に見やすい state を出力することができる。
+      // console.log(JSON.parse(JSON.stringify(state)))
       return state.map(note =>
         note.id !== id ? note : changedNote
       )
