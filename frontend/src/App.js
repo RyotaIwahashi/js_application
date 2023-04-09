@@ -4,7 +4,7 @@ import noteService from './services/notes'
 import loginService from './services/login'
 import { Note, Notification, LoginForm, LogoutForm, NoteForm, Footer, Togglable, VisibilityFilter } from './components'
 import './index.css'
-import { setNotes, createNote, toggleImportanceOf, deleteNote } from './reducers/noteReducer'
+import { createNote, toggleImportanceOf, deleteNote, initializeNote } from './reducers/noteReducer'
 
 const App = () => {
   // const [showAll, setShowAll] = useState(true)
@@ -27,13 +27,17 @@ const App = () => {
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    async function fetchData() {
-      const initialNotes = await noteService.getAll()
-      dispatch(setNotes(initialNotes))
-      // これは、dispatch({ type: 'notes/setNotes', payload: initialNotes }) と同じ動き
-    }
-    fetchData()
-  }, [])
+    // サーバーとの通信がコンポーネントの関数内で行われるのは良くない。(getAllとかを直接呼び出さないほうが良い)
+    // 適切なアクション Creator を呼び出す以外に何もする必要がないように、コンポーネントから通信を抽象化する必要がある。
+    dispatch(initializeNote())
+
+    // async function fetchData() {
+    //   const initialNotes = await noteService.getAll()
+    //   dispatch(setNotes(initialNotes))
+    //   // これは、dispatch({ type: 'notes/setNotes', payload: initialNotes }) と同じ動き
+    // }
+    // fetchData()
+  }, [dispatch])
   // 第2引数で、特定の値が変更された場合にのみエフェクトを起動するように選択できる。
   // 空の配列[]の場合、コンポーネントの最初のレンダリングのときにだけ実行される。
 

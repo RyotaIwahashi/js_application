@@ -48,6 +48,7 @@ export const { setNotes, createNote, toggleImportanceOf, deleteNote } = noteSlic
 // Redux Thunk は configureStore 関数で Redux store を作成していれば使用できる。
 // Redux Thunkを使用すると、オブジェクトの代わりに関数を返すアクションクリエーターを実装できる。
 // 特定の非同期操作の完了を待機し、その後、ストアの状態を変更する何らかのアクションをディスパッチすることができる。
+// こういうバックエンドと通信するような処理はコンポーネント内に定義せず抽象化するのがベスト。
 export const initializeNote = () => {
   return async (dispatch) => {
     const notes = await noteService.getAll()
