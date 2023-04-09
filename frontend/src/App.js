@@ -86,8 +86,7 @@ const App = () => {
     noteFormRef.current.toggleVisibility() // 別コンポーネントの関数を実行する
 
     try {
-      const returnedNote = await noteService.create(noteObject)
-      dispatch(createNote(returnedNote))
+      dispatch(createNote(noteObject))
     } catch(e) {
       if (e.response.status === 401) {
         window.localStorage.removeItem('loggedNoteappUser')

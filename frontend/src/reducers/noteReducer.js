@@ -9,7 +9,7 @@ const noteSlice = createSlice({
       const content = action.payload
       return content
     },
-    createNote(state, action) {
+    appendNote(state, action) {
       const content = action.payload
       // state.concat({
       //   ...content,
@@ -43,16 +43,25 @@ const noteSlice = createSlice({
   }
 })
 
-export const { setNotes, createNote, toggleImportanceOf, deleteNote } = noteSlice.actions
+export const { setNotes, appendNote, toggleImportanceOf, deleteNote } = noteSlice.actions
 
 // Redux Thunk は configureStore 関数で Redux store を作成していれば使用できる。
 // Redux Thunkを使用すると、オブジェクトの代わりに関数を返すアクションクリエーターを実装できる。
-// 特定の非同期操作の完了を待機し、その後、ストアの状態を変更する何らかのアクションをディスパッチすることができる。
+// ここで実装されるのはアクションなので、これらもdispatchして実行する。
+// thunkは、特定の非同期操作の完了を待機し、その後、ストアの状態を変更する何らかのアクションをディスパッチすることができる。
 // こういうバックエンドと通信するような処理はコンポーネント内に定義せず抽象化するのがベスト。
+// dispatch 以外にも、getStateも使える。
 export const initializeNote = () => {
   return async (dispatch) => {
     const notes = await noteService.getAll()
     dispatch(setNotes(notes))
+  }
+}
+
+export const createNote = content => {
+  return async (dispatch) => {
+    const newNote = await noteService.create(content)
+    dispatch(appendNote(newNote))
   }
 }
 
