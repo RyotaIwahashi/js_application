@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import noteService from '../services/notes'
 
 const noteSlice = createSlice({
   name: 'notes',
@@ -43,6 +44,17 @@ const noteSlice = createSlice({
 })
 
 export const { setNotes, createNote, toggleImportanceOf, deleteNote } = noteSlice.actions
+
+// Redux Thunk は configureStore 関数で Redux store を作成していれば使用できる。
+// Redux Thunkを使用すると、オブジェクトの代わりに関数を返すアクションクリエーターを実装できる。
+// 特定の非同期操作の完了を待機し、その後、ストアの状態を変更する何らかのアクションをディスパッチすることができる。
+export const initializeNote = () => {
+  return async (dispatch) => {
+    const notes = await noteService.getAll()
+    dispatch(setNotes(notes))
+  }
+}
+
 export default noteSlice.reducer
 
 // createSliceを使わない場合のreducerとactionクリエイターの定義

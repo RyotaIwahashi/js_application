@@ -30,7 +30,7 @@ const App = () => {
     async function fetchData() {
       const initialNotes = await noteService.getAll()
       dispatch(setNotes(initialNotes))
-      // これは、dispatch({ type: 'notes/initializeNote', payload: initialNotes }) と同じ動き
+      // これは、dispatch({ type: 'notes/setNotes', payload: initialNotes }) と同じ動き
     }
     fetchData()
   }, [])
