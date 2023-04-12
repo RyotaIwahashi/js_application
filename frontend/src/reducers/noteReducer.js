@@ -1,26 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
+import noteService from '../services/notes'
 
 // reducerとアクションを同時に定義できる
 const noteSlice = createSlice({
   name: 'notes',
   initialState: [],
   reducers: {
-    initializeNote(state, action){
+    setNotes(state, action){
       const content = action.payload
       return content
     },
-    createNote(state, action) {
+    appendNote(state, action) {
       const content = action.payload
-      state.concat({
-        ...content,
-        important: false,
-      })
+      // state.concat({
+      //   ...content,
+      //   important: false,
+      // })
       // createSlice関数によって作成されたレデューサーではImmerライブラリを利用していて、
       // これによりレデューサー内の状態引数を変更できる。なのでpushも使える。
-      // state.push({
-      //   ...content,
-      //   important: false
-      // })
+      state.push({
+        ...content,
+        important: false
+      })
     },
     toggleImportanceOf(state, action) {
       const id = action.payload
@@ -29,6 +30,9 @@ const noteSlice = createSlice({
         ...noteToChange,
         important: !noteToChange.important
       }
+      // 普通にconsole.log(state)にすると、Immer ライブラリによる内部情報が出力されるのであまり役に立たない。
+      // 下記のように記載することで人間に見やすい state を出力することができる。
+      // console.log(JSON.parse(JSON.stringify(state)))
       return state.map(note =>
         note.id !== id ? note : changedNote
       )
@@ -40,7 +44,28 @@ const noteSlice = createSlice({
   }
 })
 
-export const { initializeNote, createNote, toggleImportanceOf, deleteNote } = noteSlice.actions
+export const { setNotes, appendNote, toggleImportanceOf, deleteNote } = noteSlice.actions
+
+// Redux Thunk は configureStore 関数で Redux store を作成していれば使用できる。
+// Redux Thunkを使用すると、オブジェクトの代わりに関数を返すアクションクリエーターを実装できる。
+// ここで実装されるのはアクションなので、これらもdispatchして実行する。
+// thunkは、特定の非同期操作の完了を待機し、その後、ストアの状態を変更する何らかのアクションをディスパッチすることができる。
+// こういうバックエンドと通信するような処理はコンポーネント内に定義せず抽象化するのがベスト。
+// dispatch 以外にも、getStateも使える。
+export const initializeNote = () => {
+  return async (dispatch) => {
+    const notes = await noteService.getAll()
+    dispatch(setNotes(notes))
+  }
+}
+
+export const createNote = content => {
+  return async (dispatch) => {
+    const newNote = await noteService.create(content)
+    dispatch(appendNote(newNote))
+  }
+}
+
 export default noteSlice.reducer
 
 // createSliceを使わない場合のreducerとactionクリエイターの定義
