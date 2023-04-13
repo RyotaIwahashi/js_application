@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import noteService from '../services/notes'
 
+// reducerとアクションを同時に定義できる
 const noteSlice = createSlice({
   name: 'notes',
   initialState: [],
