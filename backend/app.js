@@ -22,18 +22,20 @@ mongoose.connect(config.MONGODB_URI)
     error('error connection to MongoDB:', e.message)
   })
 
-// const corsOptions = {
-//   origin: 'http://localhost:3000',
-//   credentials: true, // access-control-allow-credentials:true
-//   optionSuccessStatus: 200,
-// }
+// 特定のオリジンからしかアクセスを受け付けない設定
+// ブラウザ上での異なるオリジン間の取り決めなので、APIを直接叩いたりすることは可能(corsの範疇外)
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true, // access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+}
 
 // ミドルウェアの実行順序は、app.useでExpressにロードされた順序と同じ
 
 // localで別のアプリケーション(別のオリジン)でフロントとバックを動かしてる場合に必要。
 // cross origin resource sharing を許可する。つまり各レスポンスヘッダーに Access-Control-Allow-Origin をつけてくれる。
 // https://zenn.dev/luvmini511/articles/d8b2322e95ff40
-app.use(cors())
+app.use(cors(corsOptions))
 
 app.use(express.static('build')) // サーバに対して静的ファイルのリクエストがあった場合にどのデータを返すか。
 app.use(express.json())
