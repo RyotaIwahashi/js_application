@@ -29,7 +29,12 @@ mongoose.connect(config.MONGODB_URI)
 // }
 
 // ミドルウェアの実行順序は、app.useでExpressにロードされた順序と同じ
-app.use(cors()) // localで別のアプリケーションとしてフロントとバックを動かしてる場合に必要。
+
+// localで別のアプリケーション(別のオリジン)でフロントとバックを動かしてる場合に必要。
+// cross origin resource sharing を許可する。つまり各レスポンスヘッダーに Access-Control-Allow-Origin をつけてくれる。
+// https://zenn.dev/luvmini511/articles/d8b2322e95ff40
+app.use(cors())
+
 app.use(express.static('build')) // サーバに対して静的ファイルのリクエストがあった場合にどのデータを返すか。
 app.use(express.json())
 app.use(middleware.requestLogger)
