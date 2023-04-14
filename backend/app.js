@@ -22,6 +22,12 @@ mongoose.connect(config.MONGODB_URI)
     error('error connection to MongoDB:', e.message)
   })
 
+// const corsOptions = {
+//   origin: 'http://localhost:3000',
+//   credentials: true, // access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// }
+
 // ミドルウェアの実行順序は、app.useでExpressにロードされた順序と同じ
 app.use(cors()) // localで別のアプリケーションとしてフロントとバックを動かしてる場合に必要。
 app.use(express.static('build')) // サーバに対して静的ファイルのリクエストがあった場合にどのデータを返すか。
